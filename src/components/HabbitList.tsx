@@ -1,8 +1,10 @@
+
 import Button from './Button'
 import {
   eachDayOfInterval,
   endOfWeek,
-  
+  format,
+  isFuture,
   startOfWeek,
 } from 'date-fns'
 
@@ -20,7 +22,7 @@ export default function HabbitList() {
   }
   return (
     <div className='flex flex-col gap-3'>
-      {habbits.map((habbit, i) => {
+      {habbits.map((habbit) => {
         return <HabbitItem key={habbit.id} habbit={habbit} />
       })}
     </div>
@@ -32,25 +34,25 @@ type HabbitItemProps = {
 
 function HabbitItem({ habbit }: HabbitItemProps) {
   const visibleDates = eachDayOfInterval({
-    start: startOfWeek(new Date()),
-    end: endOfWeek(new Date()),
+    start: startOfWeek(new Date(),{weekStartsOn:1}),
+    end: endOfWeek(new Date(),{weekStartsOn:1}),
   })
   return (
     <div className='rounded-xl bg-zinc-800 p-4 flex-col flex gap-3'>
-      <div className='flex ietms-center justify-between '>
+      <div className='flex items-center justify-between '>
         <div className='flex gap-3'>
           <span>{habbit.name}</span>
           <span>🔥 3</span>
         </div>
-        <Button>Delete</Button>
+        <Button variant='ghost-destructive' className='text-sm'>Delete</Button>
       </div>
       <div className='flex gap-1.5'>
         {visibleDates.map((date) => (
-          <Button key={date.toISOString()}>
-            <div className='flex flex-col g-3'>
-              <span>Monday</span>
-              <span>{date.getDay()}</span>
-            </div>
+          <Button className='flex flex-col flex-1 gap-0.5 text-xs rounded-lg' key={date.toISOString()} disabled={isFuture(date)}>
+           
+              <span className='font-medium'>{format(date,"EEE")}</span>
+              <span>{format(date,'d')}</span>
+           
           </Button>
         ))}
       </div>
