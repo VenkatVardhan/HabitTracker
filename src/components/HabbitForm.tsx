@@ -1,13 +1,28 @@
-import { useState } from 'react'
+import { useState, type SubmitEvent } from 'react'
 import Button from './Button'
 
-export default function HabbitForm() {
+type HabbitFormProps={
+  addHabbit:(name:string)=>void
+}
+export default function HabbitForm({addHabbit}:HabbitFormProps) {
   const [name, setName] = useState<string>('')
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value)
   }
+
+  const handleSubmit=(e:SubmitEvent)=>{
+    e.preventDefault();
+    if(name.trim()==="") return 
+    setName(name)
+    addHabbit(name)
+    setName("")
+
+
+
+  }
   return (
-    <form action='' className='flex gap-2'>
+    <form action='' className='flex gap-2' onSubmit={e=>handleSubmit(e)}>
+      
       <input
         className='flex-1 px-4 py-2 rounded-lg focus-visible:ring-2 focus-visible:ring-violet-500 '
         type='text'
@@ -19,7 +34,7 @@ export default function HabbitForm() {
         }}
         placeholder='New habit...'
       />
-      <Button className='rounded-lg px-4 py-2 font-bold'>Add Habbit</Button>
+      <Button disabled={name.trim()===""} className='rounded-lg px-4 py-2 font-bold'>Add Habbit</Button>
     </form>
   )
 }
