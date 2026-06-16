@@ -4,16 +4,18 @@ import {
   endOfWeek,
   format,
   isFuture,
+  isSameDay,
   startOfWeek,
 } from 'date-fns'
 
-export type Habbit = { id: string; name: string }
+export type Habbit = { id: string; name: string ;completions:Date[]}
 type HabbitListProps = {
   habbits: Habbit[];
   deleteHabbit:(id:string)=>void;
+  toggleHabbit:(id:string,date:Date)=>void
   
 }
-export default function HabbitList({ habbits ,deleteHabbit}: HabbitListProps) {
+export default function HabbitList({ habbits ,deleteHabbit,toggleHabbit}: HabbitListProps) {
   if (habbits.length === 0) {
     return (
       <h1 className='text-center text-zinc-500 py-12'>
@@ -24,7 +26,7 @@ export default function HabbitList({ habbits ,deleteHabbit}: HabbitListProps) {
   return (
     <div className='flex flex-col gap-3'>
       {habbits.map((habbit) => {
-        return <HabbitItem key={habbit.id} id={habbit.id} habbit={habbit} deleteHabbit={deleteHabbit} />
+        return <HabbitItem key={habbit.id} id={habbit.id} habbit={habbit} deleteHabbit={deleteHabbit} toggleHabbit={toggleHabbit} />
       })}
     </div>
   )
@@ -32,10 +34,11 @@ export default function HabbitList({ habbits ,deleteHabbit}: HabbitListProps) {
 type HabbitItemProps = {
   habbit: Habbit
   deleteHabbit: (id: string) => void
+  toggleHabbit:(id:string,date:Date)=>void
   id: string
 }
 
-function HabbitItem({ habbit,deleteHabbit,id }: HabbitItemProps) {
+function HabbitItem({ habbit,deleteHabbit,id,toggleHabbit }: HabbitItemProps) {
   const visibleDates = eachDayOfInterval({
     start: startOfWeek(new Date(), { weekStartsOn: 1 }),
     end: endOfWeek(new Date(), { weekStartsOn: 1 }),
@@ -54,9 +57,11 @@ function HabbitItem({ habbit,deleteHabbit,id }: HabbitItemProps) {
       <div className='flex gap-1.5'>
         {visibleDates.map((date) => (
           <Button
+          onClick={()=>toggleHabbit(id,date)}
             className='flex flex-col flex-1 gap-0.5 text-xs rounded-lg'
             key={date.toISOString()}
             disabled={isFuture(date)}
+            variant={habbit.completions.some(d=>isSameDay(d,date))?"primary":"secondary"}
           >
             <span className='font-medium'>{format(date, 'EEE')}</span>
             <span>{format(date, 'd')}</span>
