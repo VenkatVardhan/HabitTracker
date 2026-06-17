@@ -1,3 +1,4 @@
+import { subDays } from 'date-fns/fp';
 import Button from './Button'
 import {
   eachDayOfInterval,
@@ -7,6 +8,7 @@ import {
   isSameDay,
   startOfWeek,
 } from 'date-fns'
+import { da } from 'date-fns/locale';
 
 export type Habbit = { id: string; name: string ;completions:Date[]}
 type HabbitListProps = {
@@ -43,12 +45,13 @@ function HabbitItem({ habbit,deleteHabbit,id,toggleHabbit }: HabbitItemProps) {
     start: startOfWeek(new Date(), { weekStartsOn: 1 }),
     end: endOfWeek(new Date(), { weekStartsOn: 1 }),
   })
+  const streak = getStreak(habbit.completions)
   return (
     <div className='rounded-xl bg-zinc-800 p-4 flex-col flex gap-3'>
       <div className='flex items-center justify-between '>
         <div className='flex gap-3'>
           <span>{habbit.name}</span>
-          <span>🔥 3</span>
+          {streak!==0 && <span>🔥 {streak}</span>}
         </div>
         <Button onClick={()=>deleteHabbit(id)} variant='ghost-destructive' className='text-sm'>
           Delete
@@ -70,4 +73,16 @@ function HabbitItem({ habbit,deleteHabbit,id,toggleHabbit }: HabbitItemProps) {
       </div>
     </div>
   )
+}
+
+function getStreak(completions:Date[]){
+  let count =0;
+  let date = new Date()
+  while(completions.some(c=>isSameDay(date,c))){
+    count++;
+    date=subDays(1,date)
+  }
+  return count;
+
+
 }
