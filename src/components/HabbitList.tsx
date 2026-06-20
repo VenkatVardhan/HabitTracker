@@ -8,16 +8,14 @@ import {
   isSameDay,
   startOfWeek,
 } from 'date-fns'
-import { da } from 'date-fns/locale';
+
+import { useHabbits } from '../context/HabbitProvider';
+
 
 export type Habbit = { id: string; name: string ;completions:Date[]}
-type HabbitListProps = {
-  habbits: Habbit[];
-  deleteHabbit:(id:string)=>void;
-  toggleHabbit:(id:string,date:Date)=>void
-  
-}
-export default function HabbitList({ habbits ,deleteHabbit,toggleHabbit}: HabbitListProps) {
+
+export default function HabbitList() {
+  const {habbits} =useHabbits();
   if (habbits.length === 0) {
     return (
       <h1 className='text-center text-zinc-500 py-12'>
@@ -28,19 +26,20 @@ export default function HabbitList({ habbits ,deleteHabbit,toggleHabbit}: Habbit
   return (
     <div className='flex flex-col gap-3'>
       {habbits.map((habbit) => {
-        return <HabbitItem key={habbit.id} id={habbit.id} habbit={habbit} deleteHabbit={deleteHabbit} toggleHabbit={toggleHabbit} />
+        return <HabbitItem key={habbit.id} id={habbit.id} habbit={habbit}  />
       })}
     </div>
   )
 }
 type HabbitItemProps = {
-  habbit: Habbit
-  deleteHabbit: (id: string) => void
-  toggleHabbit:(id:string,date:Date)=>void
+
   id: string
+  habbit:Habbit
 }
 
-function HabbitItem({ habbit,deleteHabbit,id,toggleHabbit }: HabbitItemProps) {
+function HabbitItem({id ,habbit}: HabbitItemProps) {
+  const {deleteHabbit,toggleHabbit} = useHabbits();
+  
   const visibleDates = eachDayOfInterval({
     start: startOfWeek(new Date(), { weekStartsOn: 1 }),
     end: endOfWeek(new Date(), { weekStartsOn: 1 }),

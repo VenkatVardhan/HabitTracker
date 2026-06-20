@@ -1,10 +1,11 @@
 import { useState, type SubmitEvent } from 'react'
 import Button from './Button'
+import { useHabbits } from '../context/HabbitProvider'
 
-type HabbitFormProps={
-  addHabbit:(name:string)=>void
-}
-export default function HabbitForm({addHabbit}:HabbitFormProps) {
+
+export default function HabbitForm() {
+  const habbitContext  = useHabbits();
+  
   const [name, setName] = useState<string>('')
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value)
@@ -14,7 +15,7 @@ export default function HabbitForm({addHabbit}:HabbitFormProps) {
     e.preventDefault();
     if(name.trim()==="") return 
     setName(name)
-    addHabbit(name)
+    habbitContext.addHabbit(name)
     setName("")
 
 
