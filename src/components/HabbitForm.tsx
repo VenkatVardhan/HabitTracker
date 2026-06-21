@@ -1,6 +1,6 @@
 import { useState, type SubmitEvent } from 'react'
 import Button from './Button'
-import { useHabbits } from '../context/HabbitProvider'
+import { useHabbits } from '../context/useHabits'
 
 
 export default function HabbitForm() {

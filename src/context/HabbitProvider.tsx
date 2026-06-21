@@ -1,18 +1,14 @@
-import { createContext, useContext, useState, type ReactNode } from 'react'
-import type { Habbit } from '../components/HabbitList'
+import {  useState, type ReactNode } from 'react'
+
 import { isSameDay } from 'date-fns'
+import { HabbitContext, type Habbit } from './useHabits'
 
-type Context = {
-  habbits: Habbit[]
-  addHabbit: (name: string) => void
-  deleteHabbit: (id: string) => void
-  toggleHabbit: (id: string, date: Date) => void
-}
 
-type HabbitProviderProps = {
-  children: ReactNode
-}
-export const HabbitContext = createContext<null | Context>(null)
+
+  type HabbitProviderProps = {
+    children: ReactNode
+  }
+
 
 export function HabbitProvider({ children }: HabbitProviderProps) {
   const [habbits, setHabbits] = useState<Habbit[]>([
@@ -49,10 +45,4 @@ export function HabbitProvider({ children }: HabbitProviderProps) {
     </HabbitContext>
   )
 }
-export function useHabbits(){
-  const habbitContext = useContext(HabbitContext);
-  if(habbitContext===null){
-    throw new Error("Null context");
-  }
-  return habbitContext;
-}
+

@@ -1,20 +1,22 @@
 import { subDays } from 'date-fns/fp';
 import Button from './Button'
 import {
-  eachDayOfInterval,
-  endOfWeek,
+
   format,
   isFuture,
   isSameDay,
-  startOfWeek,
+
 } from 'date-fns'
 
-import { useHabbits } from '../context/HabbitProvider';
+import { useHabbits, type Habbit } from '../context/useHabits';
+
+type HabbitListProps = {
+
+  visibleDates: Date[]
+}
 
 
-export type Habbit = { id: string; name: string ;completions:Date[]}
-
-export default function HabbitList() {
+export default function HabbitList({visibleDates}:HabbitListProps) {
   const {habbits} =useHabbits();
   if (habbits.length === 0) {
     return (
@@ -26,7 +28,7 @@ export default function HabbitList() {
   return (
     <div className='flex flex-col gap-3'>
       {habbits.map((habbit) => {
-        return <HabbitItem key={habbit.id} id={habbit.id} habbit={habbit}  />
+        return <HabbitItem key={habbit.id} id={habbit.id} habbit={habbit} visibleDates={visibleDates}  />
       })}
     </div>
   )
@@ -35,15 +37,12 @@ type HabbitItemProps = {
 
   id: string
   habbit:Habbit
+  visibleDates: Date[]
 }
 
-function HabbitItem({id ,habbit}: HabbitItemProps) {
+function HabbitItem({id ,habbit ,visibleDates}: HabbitItemProps) {
   const {deleteHabbit,toggleHabbit} = useHabbits();
-  
-  const visibleDates = eachDayOfInterval({
-    start: startOfWeek(new Date(), { weekStartsOn: 1 }),
-    end: endOfWeek(new Date(), { weekStartsOn: 1 }),
-  })
+
   const streak = getStreak(habbit.completions)
   return (
     <div className='rounded-xl bg-zinc-800 p-4 flex-col flex gap-3'>
