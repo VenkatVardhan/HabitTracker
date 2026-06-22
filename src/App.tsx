@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import HabbitForm from './components/HabbitForm'
 import HabbitList from './components/HabbitList'
 
@@ -9,6 +9,16 @@ import { addWeeks, eachDayOfInterval, endOfWeek, startOfWeek } from 'date-fns'
 
 const App = () => {
   const [weekOffset, setWeekOffset] = useState<number>(0)
+  useEffect(()=>{
+    const handler = () => {
+      console.log(weekOffset)
+    }
+    document.addEventListener("click",handler)
+    return ()=>{
+      document.removeEventListener("click",handler)
+    }
+
+  },[weekOffset])
   function nextWeek(){
       setWeekOffset(curr=>curr+1)
     }
